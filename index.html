@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solario - Residential Solar Installation in Spain</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        main {
+            padding: 1em;
+        }
+        .container {
+            max-width: 600px;
+            margin: 2em auto;
+            background-color: white;
+            padding: 2em;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .questionnaire label {
+            font-weight: bold;
+            margin-top: 1em;
+            display: block;
+        }
+        .questionnaire input, .questionnaire select {
+            display: block;
+            width: 100%;
+            margin: 0.5em 0;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .questionnaire button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1em;
+        }
+        .questionnaire button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 2em;
+            display: none;
+            text-align: center;
+        }
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="headerTitle">Solario - Residential Solar Installation in Spain</h1>
+    <div class="language-switcher">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('es')">Español</button>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <h2 id="formTitle">Find Out if Solar Panels are Right for You</h2>
+        <form id="questionnaire" class="questionnaire">
+            <label for="postcode" id="postcodeLabel">Enter Your Spanish Postcode:</label>
+            <input type="text" id="postcode" name="postcode" required>
+
+            <label for="roofArea" id="roofAreaLabel">Roof Area (in square meters):</label>
+            <input type="number" id="roofArea" name="roofArea" required>
+
+            <label for="electricityRate" id="electricityRateLabel">Current Electricity Rate (€/kWh):</label>
+            <input type="number" id="electricityRate" name="electricityRate" required>
+
+            <button type="button" id="submitButton" onclick="calculate()">Submit</button>
+        </form>
+
+        <div id="results" class="results">
+            <h3 id="resultsTitle">Cost Estimate and Savings</h3>
+            <p id="costEstimate"></p>
+            <p id="electricityGeneration"></p>
+            <p id="savings"></p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p id="footerText">Contact us at: info@solario.com</p>
+</footer>
+
+<script>
+    const translations = {
+        en: {
+            headerTitle: "Solario - Residential Solar Installation in Spain",
+            formTitle: "Find Out if Solar Panels are Right for You",
+            postcodeLabel: "Enter Your Spanish Postcode:",
+            roofAreaLabel: "Roof Area (in square meters):",
+            electricityRateLabel: "Current Electricity Rate (€/kWh):",
+            submitButton: "Submit",
+            resultsTitle: "Cost Estimate and Savings",
+            footerText: "Contact us at: info@solario.com"
+        },
+        es: {
+            headerTitle: "Solario - Instalación Solar Residencial en España",
+            formTitle: "Descubra si los Paneles Solares son Adecuados para Usted",
+            postcodeLabel: "Ingrese su Código Postal Español:",
+            roofAreaLabel: "Área del Techo (en metros cuadrados):",
+            electricityRateLabel: "Tarifa Eléctrica Actual (€/kWh):",
+            submitButton: "Enviar",
+            resultsTitle: "Estimación de Costos y Ahorros",
+            footerText: "Contáctenos en: info@solario.com"
+        }
+    };
+
+    function setLanguage(lang) {
+        document.getElementById('headerTitle').innerText = translations[lang].headerTitle;
+        document.getElementById('formTitle').innerText = translations[lang].formTitle;
+        document.getElementById('postcodeLabel').innerText = translations[lang].postcodeLabel;
+        document.getElementById('roofAreaLabel').innerText = translations[lang].roofAreaLabel;
+        document.getElementById('electricityRateLabel').innerText = translations[lang].electricityRateLabel;
+        document.getElementById('submitButton').innerText = translations[lang].submitButton;
+        document.getElementById('resultsTitle').innerText = translations[lang].resultsTitle;
+        document.getElementById('footerText').innerText = translations[lang].footerText;
+    }
+
+    const sunlightData = {
+        '28001': 5.5, // Madrid
+        '08001': 5.7, // Barcelona
+        '29001': 5.9, // Málaga
+        '41001': 6.0, // Sevilla
+        // Add more postcodes and their average sunlight hours
+    };
+
+    function calculate() {
+        const postcode = document.getElementById('postcode').value;
+        const roofArea = document.getElementById('roofArea').value;
+        const electricityRate = document.getElementById('electricityRate').value;
+        const sunlightHours = sunlightData[postcode];
+
+        if (sunlightHours && roofArea && electricityRate) {
+            const panelEfficiency = 0.15; // 15% efficiency
+            const panelArea = 1.6; // each panel covers 1.6 square meters
+            const panelCost = 300; // cost per panel
+            const installationCostPerPanel = 200; // installation cost per panel
+
+            const numPanels = Math.floor(roofArea / panelArea);
+            const totalInstallationCost = numPanels * (panelCost + installationCostPerPanel);
+            const dailyElectricityGeneration = numPanels * panelArea * panelEfficiency * sunlightHours;
+            const yearlyElectricityGeneration = dailyElectricityGeneration * 365;
+            const yearlySavings = yearlyElectricityGeneration * electricityRate;
+
+            document.getElementById('costEstimate').innerText = `Estimated Installation Cost: €${totalInstallationCost}`;
+            document.getElementById('electricityGeneration').innerText = `Estimated Yearly Electricity Generation: ${yearlyElectricityGeneration.toFixed(2)} kWh`;
+            document.getElementById('savings').innerText = `Estimated Yearly Savings: €${yearlySavings.toFixed(2)}`;
+
+            document.getElementById('results').style.display = 'block';
+        } else {
+            alert('Please fill in all fields and ensure the postcode is valid.');
+        }
+    }
+
+    // Set default language to English
+    setLanguage('en');
+</script>
+
+</body>
+</html>
